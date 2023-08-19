@@ -1,9 +1,9 @@
 const baseAPI = '/api';
 
-const heroService = {
+const scryfallCardService = {
   get() {
     return new Promise((resolve, reject) => {
-      fetch(`${baseAPI}/heroes`)
+      fetch(`${baseAPI}/scryfallCards`)
         .then(response => response.json())
         .then(json => resolve(json))
         .catch(err => {
@@ -12,11 +12,11 @@ const heroService = {
     });
   },
 
-  create(hero) {
+  create(scryfallCard) {
     return new Promise((resolve, reject) => {
-      fetch(`${baseAPI}/hero`, {
+      fetch(`${baseAPI}/scryfallCard`, {
         method: 'PUT',
-        body: JSON.stringify(hero),
+        body: JSON.stringify(scryfallCard),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
@@ -30,11 +30,11 @@ const heroService = {
     });
   },
 
-  update(hero) {
+  update(scryfallCard) {
     return new Promise((resolve, reject) => {
-      fetch(`${baseAPI}/hero`, {
+      fetch(`${baseAPI}/scryfallCard`, {
         method: 'POST',
-        body: JSON.stringify(hero),
+        body: JSON.stringify(scryfallCard),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
@@ -49,9 +49,9 @@ const heroService = {
     });
   },
 
-  destroy(hero) {
+  destroy(scryfallCard) {
     return new Promise((resolve, reject) => {
-      fetch(`${baseAPI}/hero/${hero.id}`, { method: 'DELETE' })
+      fetch(`${baseAPI}/scryfallCard/${scryfallCard.id}`, { method: 'DELETE' })
         .then(response => response.json())
         .then(json => resolve(json))
         .catch(err => {
@@ -61,4 +61,4 @@ const heroService = {
   }
 };
 
-export default heroService;
+export default scryfallCardService;
