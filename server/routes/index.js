@@ -8,11 +8,11 @@ router.get("/scryfallCards", (req, res) => {
 });
 
 router.put("/scryfallcard", (req, res) => {
-  scryfallCardsService.create(req, res);
+  scryfallCardsService.update(req, res);
 });
 
 router.post("/scryfallcard", (req, res) => {
-  scryfallCardsService.update(req, res);
+  scryfallCardsService.create(req, res);
 });
 
 router.delete("/scryfallcard/:id", (req, res) => {
