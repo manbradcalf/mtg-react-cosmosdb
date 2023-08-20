@@ -1,27 +1,24 @@
-import React from 'react';
+import React from "react";
 
-const ScryfallCard = props => {
+const ScryfallCard = (props) => {
   return (
-    <li
+    <div
       onClick={() => props.onSelect(props.scryfallCard)}
-      className={props.scryfallCard === props.selectedscryfallCard ? 'selected' : ''}
+      className={
+        props.scryfallCard === props.selectedscryfallCard ? "selected" : ""
+      }
     >
-      <button
-        className="delete-button"
-        onClick={e => props.onDelete(e, props.scryfallCard)}
-      >
-        Delete
-      </button>
       <div className="scryfallCard-element">
-        <img src={props.scryfallCard.image_uris.small} />
-        <div className="badge">
-          {props.scryfallCard.id}
-        </div>
-        <div className="name">
-          {props.scryfallCard.name}
-        </div>
+        <img className="card-image" src={props.scryfallCard.image_uris.small} />
+        <div className="price">{props.scryfallCard.prices.usd}</div>
+        <button
+          className="delete-button"
+          onClick={(e) => props.onDelete(e, props.scryfallCard)}
+        >
+          Delete
+        </button>
       </div>
-    </li>
+    </div>
   );
 };
 

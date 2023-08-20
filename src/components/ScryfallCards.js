@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import EditscryfallCard from './EditScryfallCard';
-import ScryfallCard from './ScryfallCard';
+import EditscryfallCard from "./EditScryfallCard";
+import ScryfallCard from "./ScryfallCard";
 
-import api from '../api';
+import api from "../api";
 
 class ScryfallCards extends Component {
   constructor() {
@@ -11,7 +11,7 @@ class ScryfallCards extends Component {
 
     this.state = {
       scryfallCards: [],
-      creatingscryfallCard: false
+      creatingscryfallCard: false,
     };
 
     this.handleEnableAddMode = this.handleEnableAddMode.bind(this);
@@ -23,7 +23,7 @@ class ScryfallCards extends Component {
   }
 
   componentDidMount() {
-    api.getByMinCmc(7).then(json => this.setState({ scryfallCards: json }));
+    api.getByMinCmc(7).then((json) => this.setState({ scryfallCards: json }));
   }
 
   handleSelect(scryfallCard) {
@@ -33,21 +33,24 @@ class ScryfallCards extends Component {
   handleDelete(event, scryfallCard) {
     event.stopPropagation();
 
-    api.destroy(scryfallCard).then(() => {
-      let scryfallCards = this.state.scryfallCards;
-      scryfallCards = scryfallCards.filter(h => h !== scryfallCard);
-      this.setState({ scryfallCards: scryfallCards });
+    console.log(
+      "unable to delete " + scryfallCard.name + ", delete not yet supported"
+    );
+    // api.destroy(scryfallCard).then(() => {
+    //   let scryfallCards = this.state.scryfallCards;
+    //   scryfallCards = scryfallCards.filter(h => h !== scryfallCard);
+    //   this.setState({ scryfallCards: scryfallCards });
 
-      if (this.selectedscryfallCard === scryfallCard) {
-        this.setState({ selectedscryfallCard: null });
-      }
-    });
+    //   if (this.selectedscryfallCard === scryfallCard) {
+    //     this.setState({ selectedscryfallCard: null });
+    //   }
+    // });
   }
 
   handleEnableAddMode() {
     this.setState({
       addingscryfallCard: true,
-      selectedScryfallCard: { id: '', name: '', saying: '' }
+      selectedScryfallCard: { id: "", name: "", saying: "" },
     });
   }
 
@@ -61,17 +64,17 @@ class ScryfallCards extends Component {
     if (this.state.addingscryfallCard) {
       api
         .create(this.state.selectedscryfallCard)
-        .then(result => {
-          console.log('Successfully created!');
+        .then((result) => {
+          console.log("Successfully created!");
 
           scryfallCards.push(this.state.selectedscryfallCard);
           this.setState({
             scryfallCards: scryfallCards,
             selectedscryfallCard: null,
-            addingscryfallCard: false
+            addingscryfallCard: false,
           });
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     } else {
@@ -80,7 +83,7 @@ class ScryfallCards extends Component {
         .then(() => {
           this.setState({ selectedscryfallCard: null });
         })
-        .catch(err => { });
+        .catch((err) => {});
     }
   }
 
@@ -93,8 +96,20 @@ class ScryfallCards extends Component {
   render() {
     return (
       <div>
+        <div className="editarea">
+          <button onClick={this.handleEnableAddMode}>
+            Add New scryfallCard
+          </button>
+          <EditscryfallCard
+            addingscryfallCard={this.state.addingscryfallCard}
+            onChange={this.handleOnChange}
+            selectedScryfallCard={this.state.selectedscryfallCard}
+            onSave={this.handleSave}
+            onCancel={this.handleCancel}
+          />
+        </div>
         <ul className="scryfallCards">
-          {this.state.scryfallCards.map(scryfallCard => {
+          {this.state.scryfallCards.map((scryfallCard) => {
             return (
               <ScryfallCard
                 key={scryfallCard.id}
@@ -106,16 +121,6 @@ class ScryfallCards extends Component {
             );
           })}
         </ul>
-        <div className="editarea">
-          <button onClick={this.handleEnableAddMode}>Add New scryfallCard</button>
-          <EditscryfallCard
-            addingscryfallCard={this.state.addingscryfallCard}
-            onChange={this.handleOnChange}
-            selectedScryfallCard={this.state.selectedscryfallCard}
-            onSave={this.handleSave}
-            onCancel={this.handleCancel}
-          />
-        </div>
       </div>
     );
   }
