@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 
-import Heroes from "./components/Heroes";
+import ScryfallCards from "./components/ScryfallCards";
 
 class App extends Component {
   render() {
@@ -9,7 +9,7 @@ class App extends Component {
       <div>
         <h1>Cards</h1>
         <div className="header-bar" />
-        <Heroes />
+        <ScryfallCards />
       </div>
     );
   }

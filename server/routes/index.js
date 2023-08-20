@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const scryfallCardsService = require("../scryfallcard-service");
+const scryfallCardsService = require("../scryfallCard-service");
 
 router.get("/scryfallCards", (req, res) => {
   scryfallCardsService.get(req, res);

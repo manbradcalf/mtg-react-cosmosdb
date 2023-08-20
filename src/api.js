@@ -12,6 +12,18 @@ const scryfallCardService = {
     });
   },
 
+  getByMinCmc(minCmc) {
+    return new Promise((resolve, reject) => {
+      fetch(`${baseAPI}/scryfallCards?minCmc=${minCmc}`)
+        .then(response => response.json())
+        .then(json => resolve(json))
+        .catch(err => {
+          reject(err);
+        });
+    });
+  },
+
+
   create(scryfallCard) {
     return new Promise((resolve, reject) => {
       fetch(`${baseAPI}/scryfallCard`, {
