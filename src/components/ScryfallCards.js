@@ -23,7 +23,7 @@ class ScryfallCards extends Component {
   }
 
   componentDidMount() {
-    api.getByMinCmc(7).then((json) => this.setState({ scryfallCards: json }));
+    api.getByMinCmc(2).then((json) => this.setState({ scryfallCards: json }));
   }
 
   handleSelect(scryfallCard) {

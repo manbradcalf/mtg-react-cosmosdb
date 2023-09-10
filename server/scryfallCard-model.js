@@ -1,3 +1,11 @@
+/**
+ TODO: this doesnt support card faces! fix before we add any more cards
+ save the whole dang scryfall response now.
+ it includes card_faces (and whatever else we'll need later)                                          
+ 
+ Example with 2 card faces: https://api.scryfall.com/cards/0dbac7ce-a6fa-466e-b6ba-173cf2dec98e
+ */
+
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const scryfallCardSchema = new Schema({
