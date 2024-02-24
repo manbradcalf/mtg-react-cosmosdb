@@ -1,13 +1,14 @@
----
-## Notes to self (Ben Medcalf)
+# Notes to self (Ben Medcalf)
 
 This is forked from an old react-cosmosdb tutorial using react 15 and *doesnt have hooks*
 
 I am just starting the process of upgrading it to at least 16.8 so I can use
 hooks
----
 
-languages:
+---
+# Original README below
+
+## languages:
 
 - javascript
 - nodejs
