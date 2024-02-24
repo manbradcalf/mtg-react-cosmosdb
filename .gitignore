@@ -59,4 +59,7 @@ typings/
 
 .DS_Store
 
-
+server/build
+.vscode
+coc-settings.json
+*.swp
