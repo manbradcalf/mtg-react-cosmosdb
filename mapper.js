@@ -1,26 +1,8 @@
 const Fs = require('fs');
 const CsvReadableStream = require('csv-reader');
 
-const sleep = (millis) => {
-  return new Promise((resolve) => setTimeout(resolve, millis));
-};
-
 let inputStream = Fs.createReadStream('binderOne.csv', 'utf8');
-/**
- A row arrived:  [
-  209,
-  0.1,
-  '',
-  'en',
-  "Vivien's Invocation",
-  '5e2b30d2-81e9-40cd-86dd-3ec5dd06ced0',
-  2,
-  'rare',
-  '784c4711-223d-4b95-a163-87e57f87b8db',
-  'm19',
-  'Core Set 2019'
-]
- */
+
 const columns = {
   collector_number: 0,
   estimated_price: 1,
@@ -35,6 +17,11 @@ const columns = {
   set_name: 10,
 };
 
+let scryfallIds = [];
+let entities = [];
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 inputStream
   .pipe(
     new CsvReadableStream({
@@ -44,52 +31,47 @@ inputStream
     })
   )
   .on('data', async function (row) {
-    const cardIsNotInDbYet =
-      (await cardCollection.findOne({ _id: row[columns.scryfall_id] })) ===
-      undefined;
-
-    if (cardIsNotInDbYet) {
-      // sleep to be a scyfall good citizen
-      await sleep(100);
-
-      console.log(`row is ${row}`);
-
-      const res = await fetch(
-        `https://api.scryfall.com/cards/${row[columns.scryfall_id]}`
-      );
-      const scryfallCardResponse = await res.json();
-
-      console.log(
-        `scryfallResponse is ${JSON.stringify(scryfallCardResponse)}`
-      );
-
-      const prices = {
-        usd: parseFloat(scryfallCardResponse.prices.usd),
-        usdFoil: parseFloat(scryfallCardResponse.prices.usdFoil),
-        eur: parseFloat(scryfallCardResponse.prices.eur),
-        eurFoil: parseFloat(scryfallCardResponse.prices.eur),
-        tix: parseFloat(scryfallCardResponse.prices.tix),
-      };
-
-      scryfallCardResponse.prices = prices;
-      scryfallCardResponse.historicalPrices.push(
-        new HistoricalPrices(new Date(), prices)
-      );
-
-      // Use scryfallId as our unique object id instead of autogenerating one
-      scryfallCardResponse._id = csvCard.scryfall_id;
-      scryfallCardResponse.historicalPrices = [];
-      cardCollection.insertOne(scryfallCardResponse);
-
-      console.log(
-        `\ncard is ${JSON.stringify(
-          scryfallCardResponse.name
-        )} and costs was inserted successfully`
-      );
-      cards.push(scryfallCardResponse);
-    }
-    console.log('A row arrived: ', row);
+    scryfallIds.push(row[columns.scryfall_id]);
   })
-  .on('end', function () {
+  .on('end', async function () {
     console.log('No more rows!');
+    for (let i = 0; i < scryfallIds.length; i++) {
+      let entity = await mapScryfallResponseToEntity(scryfallIds[i]);
+      entities.push(entity);
+      console.log(`Just pushed ${entity.name}`);
+    }
   });
+
+const mapScryfallResponseToEntity = async (scryfallId) => {
+  const url = `https://api.scryfall.com/cards/${scryfallId}`;
+  // sleep to be a scyfall good citizen
+  await sleep(2000);
+  const res = (await fetch(url));
+  const cardEntity = res.json();
+
+  if (!cardEntity) {
+    console.log(`${row}\n\n can't be mapped.`);
+  }
+
+  // parse to float so we cqn store these as numbers in mongo
+  const prices = {
+    usd: parseFloat(cardEntity.prices?.usd ?? -1),
+    usdFoil: parseFloat(cardEntity.prices?.usdFoil ?? -1),
+    eur: parseFloat(cardEntity.prices?.eur ?? -1),
+    eurFoil: parseFloat(cardEntity.prices?.eur ?? -1),
+    tix: parseFloat(cardEntity.prices?.tix ?? -1),
+  };
+
+  cardEntity.prices = prices;
+
+  // Use scryfallId as our unique object id instead of autogenerating one
+  cardEntity._id = scryfallId;
+  // generate historicalPrices array so we can log price history moving forward
+  cardEntity.historicalPrices = [];
+  cardEntity.historicalPrices.push({
+    date: new Date(),
+    prices: prices,
+  });
+
+  return cardEntity;
+};
