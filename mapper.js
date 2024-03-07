@@ -1,5 +1,6 @@
-const Fs = require('fs');
-const CsvReadableStream = require('csv-reader');
+import * as Fs from 'fs';
+import CsvReadableStream from 'csv-reader';
+import { sleep } from './util.js';
 
 let inputStream = Fs.createReadStream('binderOne.csv', 'utf8');
 
@@ -19,8 +20,6 @@ const columns = {
 
 let scryfallIds = [];
 let entities = [];
-
-const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 inputStream
   .pipe(
@@ -46,7 +45,7 @@ const mapScryfallResponseToEntity = async (scryfallId) => {
   const url = `https://api.scryfall.com/cards/${scryfallId}`;
   // sleep to be a scyfall good citizen
   await sleep(2000);
-  const res = (await fetch(url));
+  const res = await fetch(url);
   const cardEntity = res.json();
 
   if (!cardEntity) {
